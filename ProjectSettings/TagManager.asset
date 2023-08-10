@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Rope
+  - Rubbish
+  - Scene
+  - Bin
+  - Effect
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Player
+  - Rope
+  - River
+  - Rubbish
+  - Bin
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Scene
+    uniqueID: 3953118541
+    locked: 0
+  - name: Bin
+    uniqueID: 3691614975
+    locked: 0
+  - name: Rubbish
+    uniqueID: 3316156911
+    locked: 0
+  - name: Player
+    uniqueID: 2346893115
+    locked: 0
+  - name: Rope
+    uniqueID: 2659966461
+    locked: 0
+  - name: Effect
+    uniqueID: 2488067611
+    locked: 0
