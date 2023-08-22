@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class EnemyControl : MonoBehaviour
 {
-    public float speed = 10;
+    public enum EnemyType
+    {
+        CanThrow = 0,
+        CanKick = 1,
+        CanBlock = 2,
+    }
+    public EnemyType enemyType;
 
+    public float speed;
     public bool isVertical;
 
-    public float changeDirectionTime = 2f;
-
+    public float changeDirectionTime;
     private float changeTimer;
 
     private Vector2 moveDirection;
@@ -17,42 +23,51 @@ public class EnemyControl : MonoBehaviour
     private Rigidbody2D rbody;
     private Animator anim;
 
-    // Start is called before the first frame update
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
         moveDirection = isVertical ? Vector2.up : Vector2.right;
-
         changeTimer = changeDirectionTime;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        changeTimer -= Time.deltaTime;
-        if(changeTimer < 0)
+        if(enemyType == EnemyType.CanThrow)
         {
-            moveDirection *= -1;
-            changeTimer = changeDirectionTime;
+            changeTimer -= Time.deltaTime;
+            if (changeTimer < 0)
+            {
+                moveDirection *= -1;
+                changeTimer = changeDirectionTime;
+            }
+
+            Vector2 position = rbody.position;
+            position.x += moveDirection.x * speed * Time.deltaTime;
+            position.y += moveDirection.y * speed * Time.deltaTime;
+
+            rbody.MovePosition(position);
+            anim.SetFloat("moveX", moveDirection.x);
+            anim.SetFloat("moveY", moveDirection.y);
         }
 
-        Vector2 position = rbody.position;
-        position.x += moveDirection.x * speed * Time.deltaTime;
-        position.y += moveDirection.y * speed * Time.deltaTime;
-
-        rbody.MovePosition(position);
-        anim.SetFloat("moveX", moveDirection.x);
-        anim.SetFloat("moveY", moveDirection.y);
-    }
-
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        PlayerControl pc = other.gameObject.GetComponent<PlayerControl>();
-        if(pc != null)
+        if(enemyType == EnemyType.CanKick)
         {
-            pc.UseHand(-1);
+            changeTimer -= Time.deltaTime;
+            if (changeTimer < 0)
+            {
+                moveDirection *= -1;
+                changeTimer = changeDirectionTime;
+            }
+
+            Vector2 position = rbody.position;
+            position.x += moveDirection.x * speed * Time.deltaTime;
+            position.y += moveDirection.y * speed * Time.deltaTime;
+
+            rbody.MovePosition(position);
+            anim.SetFloat("moveX", moveDirection.x);
+            anim.SetFloat("moveY", moveDirection.y);
         }
     }
 }

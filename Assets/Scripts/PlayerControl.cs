@@ -1,35 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 public class PlayerControl : MonoBehaviour {
-    public float speed = 5f;
+    public float speed =20;
     public GameObject ropePrefab;
 
-    public AudioClip shootClip;
-
-    private int maxHand = 2;
-    private int currentHand;
-
     private Vector2 moveDirection = new Vector2(0, -1);
-
-    public int MyMaxHand { get { return maxHand; } }
-    public int MyCurrentHand { get { return currentHand; } }
 
     Rigidbody2D rbody;
     Animator anim;
 
-    // Start is called before the first frame update
     void Start(){
         rbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        currentHand = 0;
     }
 
-    // Update is called once per frame
     void Update(){
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
+        //float moveX = Input.GetAxisRaw("Horizontal");
+        //float moveY = Input.GetAxisRaw("Vertical");
+
+        float moveX = 0, moveY = 0;
+        if (Input.GetKey(GameManager.GM.forward))
+        {
+            moveY = 1;
+        }
+
+        if (Input.GetKey(GameManager.GM.backward))
+        {
+            moveY = -1;
+        }
+
+        if (Input.GetKey(GameManager.GM.left))
+        {
+            moveX = -1;
+        }
+
+        if (Input.GetKey(GameManager.GM.right))
+        {
+            moveX = 1;
+        }
 
         Vector2 moveVector = new Vector2(moveX, moveY);
         if (moveVector.x != 0 || moveVector.y != 0) {
@@ -43,9 +54,9 @@ public class PlayerControl : MonoBehaviour {
         position += moveVector * speed * Time.deltaTime;
         rbody.MovePosition(position);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(GameManager.GM.collect))
         {
-            AudioManager.instance.AudioPlay(shootClip);
+            AudioManager.Instance.PlaySFX("Shoot", false);
             GameObject rope = Instantiate(ropePrefab, rbody.position - Vector2.up * 0.75f, Quaternion.identity);
             RopeControl rc = rope.GetComponent<RopeControl>();
             if (rc != null)
@@ -53,13 +64,13 @@ public class PlayerControl : MonoBehaviour {
                 rc.Move(moveDirection, 500);
             }
         }
-
     }
 
-    public void UseHand(int amount)
-    {
-        Debug.Log(currentHand + "/" + maxHand);
-        currentHand = Mathf.Clamp(currentHand + amount, 0, maxHand);
-        Debug.Log(currentHand + "/" + maxHand);
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Bin"))
+    //    {
+    //        isNear = true;
+    //    }
+    //}
 }

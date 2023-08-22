@@ -1,47 +1,72 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RubbishCollectable : MonoBehaviour
 {
-    public EquipSlotControl.objectType type;
     public BinControl.BinColour belonging;
 
-    public int num = 1;
-
-    private bool isCollected;
-    private bool isThrown;
+    private Inventory inventory;
+    public GameObject itemButton;
 
     public ParticleSystem collectEffect;
-    //public GameObject collectedEffect;
-    public AudioClip collectClip;
 
-    // Start is called before the first frame update
-    void Start()
+    public float speed;
+
+    public Transform goalPos;
+
+    private Vector2 StartPos;
+    private Vector2 EndPos;
+
+    private bool isMove;
+
+    public static bool isCollect = false;
+
+    private void Start()
     {
-        isCollected = false;
-        isThrown = false;
+        StartPos = this.transform.position;
+        EndPos = goalPos.position;
+
+        inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (isCollected) return;
-        if (isThrown) return;
+        float step = speed * Time.deltaTime;
+
+        if (!isMove)
+        {
+            this.transform.position = Vector2.MoveTowards(this.transform.position, EndPos, step);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     public void Collected()
     {
-        isCollected = true;
-        Instantiate(collectEffect, transform.position, Quaternion.identity);
-        AudioManager.instance.AudioPlay(collectClip);
+        for (int i = 0; i < inventory.slots.Length; i++)
+        {
+            if (inventory.isFull[i] == false)
+            {
+                isCollect = true;
 
-        Destroy(this.gameObject);
+                Instantiate(itemButton, inventory.slots[i].transform, false);
+                inventory.isFull[i] = true;
+
+                Instantiate(collectEffect, transform.position, Quaternion.identity);
+                AudioManager.Instance.PlaySFX("Collect", false);
+
+                Destroy(gameObject);
+                break;
+            }
+        }
     }
 
     public void Thrown()
     {
-        isThrown = true;
         Destroy(this.gameObject);
     }
 }
